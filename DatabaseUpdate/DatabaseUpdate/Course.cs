@@ -8,31 +8,36 @@ namespace DatabaseUpdate
 {
     class Course
     {
-        public Course(string abbr, string num, string description, string tccn = null)
+        public Course(string abbr, string num, string name, string description, string[] topics, string tccn = null)
         {
             Abbr = abbr;
             Number = num;
-            Description = description;
+            Name = name;
+            Description = description.Split('{')[0];
+            Tccn = tccn;
+
+            Hours = int.Parse(Number.Substring(0, 1));
+            Topics = topics;
         }
 
         public string Abbr { get; set; }
         public string Number { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
         public string Tccn { get; set; }
-
-        public int GetHours()
-        {
-            int hour = 0;
-            if (int.TryParse(Number.Substring(0,1), out hour))
-            {
-                return hour;
-            }
-            return -1;
-        }
+        public int Hours { get; set; }
+        public string[] Topics { get; set; }
 
         public override string ToString()
         {
-            return string.Join(" ", new string[] { Abbr, Number, Description, Tccn });
+            if (Topics == null)
+            {
+                return string.Join(";;;", new string[] { Abbr, Number, Name, Description, null, Tccn });
+            }
+            else
+            {
+                return string.Join(";;;", new string[] { Abbr, Number, Name, Description, string.Join(";;", Topics), Tccn });
+            }
         }
     }
 }
